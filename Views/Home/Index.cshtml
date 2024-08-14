@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "User Auctions";
+}
+
+<div id="calendar"></div>
+
+<script>
+    // Przypisanie danych JSON do zmiennej JavaScript
+    var eventsFromServer = @Html.Raw(ViewBag.EventsJson);
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            headerToolbar: {
+                start: 'dayGridMonth,timeGridWeek,timeGridDay',
+                center: 'title',
+                end: 'prevYear,prev,next,nextYear'
+            },
+            initialView: 'dayGridMonth',
+            initialDate: '2024-08-12',
+            events: eventsFromServer, // Wykorzystanie danych w konfiguracji kalendarza
+            eventContent: function (arg) {
+                // Sprawdzenie, czy wydarzenie jest ulubione
+                var isFavorite = arg.event.extendedProps.isFavorite;
+                var heartIcon = isFavorite ? '<span style="color: red;">&#9829;</span>' : '';
+
+                // Tworzenie treści wydarzenia z tytułem i opcjonalnym sercem
+                return {
+                    html: `<div>${heartIcon} ${arg.event.title}</div>`
+                };
+            }
+        });
+
+        calendar.render();
+    });
+</script>
